@@ -4,6 +4,14 @@
   "package": "com.jelly.farmhelperv2.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
-  "client": ["client.MixinClientConnection"],
-  "injectors": {"defaultRequire": 1}
+  "client": [
+    "client.MixinClientConnection",
+    "client.MixinClientPlayNetworkHandler",
+    "client.MixinLocalPlayer",
+    "client.MixinKeyBinding",
+    "client.MixinMinecraftClient"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
