@@ -3,18 +3,30 @@
   "id": "${modid}",
   "version": "${version}",
   "name": "${modName}",
-  "description": "Advanced Hypixel SkyBlock farming macro",
-  "authors": ["JellyLabScripts"],
+  "description": "Advanced Hypixel SkyBlock farming macro with anti-staff detection",
+  "authors": [
+    "JellyLabScripts"
+  ],
+  "contact": {
+    "homepage": "https://github.com/253949u-oss/FarmHelper-26.1.2-Fabric",
+    "issues": "https://github.com/253949u-oss/FarmHelper-26.1.2-Fabric/issues",
+    "sources": "https://github.com/253949u-oss/FarmHelper-26.1.2-Fabric"
+  },
   "license": "Other",
   "icon": "farmhelper/icon-mod/icon.png",
   "environment": "client",
   "entrypoints": {
-    "main": ["com.jelly.farmhelperv2.FarmHelperFabric"]
+    "main": [
+      "com.jelly.farmhelperv2.FarmHelperFabric.FarmHelperFabricInitializer"
+    ]
   },
-  "mixins": ["mixins.${modid}.json"],
+  "mixins": [
+    "mixins.${modid}.json"
+  ],
   "depends": {
     "fabricloader": ">=0.15.11",
     "minecraft": "~26.1.2",
-    "java": ">=21"
+    "java": ">=21",
+    "fabric-api": "*"
   }
 }
