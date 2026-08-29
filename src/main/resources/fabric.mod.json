@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "${modid}",
+  "version": "${version}",
+  "name": "${modName}",
+  "description": "Advanced Hypixel SkyBlock farming macro",
+  "authors": ["JellyLabScripts"],
+  "license": "Other",
+  "icon": "farmhelper/icon-mod/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "main": ["com.jelly.farmhelperv2.FarmHelperFabric"]
+  },
+  "mixins": ["mixins.${modid}.json"],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~26.1.2",
+    "java": ">=21"
+  }
+}

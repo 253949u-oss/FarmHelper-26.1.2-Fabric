@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.jelly.farmhelperv2.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
+  "client": ["client.MixinClientConnection"],
+  "injectors": {"defaultRequire": 1}
+}
