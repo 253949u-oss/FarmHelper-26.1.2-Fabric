@@ -6,8 +6,6 @@ import com.jelly.farmhelperv2.event.GameTickEvent;
 import com.jelly.farmhelperv2.feature.FeatureManager;
 import com.jelly.farmhelperv2.feature.impl.farming.FarmingRegistry;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +23,7 @@ public class FarmHelperFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        LOGGER.info("Initializing FarmHelper {} for Minecraft 26.1.2", VERSION);
+        LOGGER.info("Initializing FarmHelper {} for Minecraft {}", VERSION, System.getProperty("minecraft.version", "26.2"));
         
         // Initialize managers
         featureManager = FeatureManager.getInstance();
