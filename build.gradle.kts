@@ -12,6 +12,8 @@ plugins {
 val baseGroup: String by project
 val mcVersion: String by project
 val version: String by project
+val loaderVersion: String by project  // ← ADD THIS
+val fabricApiVersion: String by project  // ← ADD THIS
 val mixinGroup = "$baseGroup.mixin"
 val modid: String by project
 val modName: String by project
@@ -52,8 +54,8 @@ val shadowImpl: Configuration by configurations.creating {
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
     mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:${'$'}loaderVersion")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${'$'}fabricApiVersion")
+    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")  // ← FIXED
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")  // ← FIXED
     compileOnly("org.spongepowered:mixin:0.8.5")
     annotationProcessor("org.spongepowered:mixin:0.8.5")
     compileOnly("org.projectlombok:lombok:1.18.34")
