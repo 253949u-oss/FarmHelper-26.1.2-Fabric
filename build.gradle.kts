@@ -3,7 +3,7 @@
 plugins {
     idea
     java
-    id("fabric-loom") version "1.17"
+    id("fabric-loom") version "1.20"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.kyori.blossom") version "1.3.2"
@@ -59,7 +59,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.34")
     annotationProcessor("org.projectlombok:lombok:1.18.34")
     shadowImpl("org.java-websocket:Java-WebSocket:1.5.7")
-    implementation("net.dv8tion:JDA:5.0.0")
+    implementation("net.dv8tion:JDA:5.1.0")
 }
 
 tasks.withType(JavaCompile::class) {
