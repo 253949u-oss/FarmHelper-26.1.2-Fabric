@@ -3,7 +3,7 @@
 plugins {
     idea
     java
-    id("fabric-loom") version "1.8.1"
+    id("fabric-loom") version "1.17"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.kyori.blossom") version "1.3.2"
@@ -52,8 +52,8 @@ val shadowImpl: Configuration by configurations.creating {
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
     mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:0.15.11")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.100.0+1.21.2")
+    modImplementation("net.fabricmc:fabric-loader:${'$'}loaderVersion")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${'$'}fabricApiVersion")
     compileOnly("org.spongepowered:mixin:0.8.5")
     annotationProcessor("org.spongepowered:mixin:0.8.5")
     compileOnly("org.projectlombok:lombok:1.18.34")
