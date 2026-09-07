@@ -12,9 +12,8 @@ plugins {
 val baseGroup: String by project
 val mcVersion: String by project
 val version: String by project
-val loaderVersion: String by project  // ← ADD THIS
-val fabricApiVersion: String by project  // ← ADD THIS
-val mixinGroup = "$baseGroup.mixin"
+val loaderVersion: String by project
+val fabricApiVersion: String by project
 val modid: String by project
 val modName: String by project
 
@@ -31,10 +30,6 @@ loom {
     mixin {
         defaultRefmapName.set("mixins.$modid.refmap.json")
     }
-}
-
-sourceSets.main {
-    output.setResourcesDir(sourceSets.main.flatMap { it.java.classesDirectory })
 }
 
 repositories {
@@ -54,12 +49,18 @@ val shadowImpl: Configuration by configurations.creating {
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
     mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")  // ← FIXED
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")  // ← FIXED
-    compileOnly("org.spongepowered:mixin:0.8.5")
-    annotationProcessor("org.spongepowered:mixin:0.8.5")
+    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+    
+    // Mixin
+    compileOnly("org.spongepowered:mixin:0.12.5")  // Updated for newer Fabric
+    annotationProcessor("org.spongepowered:mixin:0.12.5")
+    
+    // Lombok
     compileOnly("org.projectlombok:lombok:1.18.34")
     annotationProcessor("org.projectlombok:lombok:1.18.34")
+    
+    // Your dependencies
     shadowImpl("org.java-websocket:Java-WebSocket:1.5.7")
     implementation("net.dv8tion:JDA:5.1.0")
 }
@@ -80,4 +81,17 @@ tasks.processResources {
     filesMatching(listOf("fabric.mod.json", "mixins.$modid.json")) {
         expand(inputs.properties)
     }
+}
+
+// Shadow JAR relocation (prevents conflicts)
+tasks.shadowJar {
+    configurations = listOf(shadowImpl)
+    archiveClassifier.set("shadow")
+    relocate("org.java_websocket", "${baseGroup}.shadow.websocket")
+}
+
+// Make sure the shadow JAR is included in the final mod JAR
+tasks.remapJar {
+    dependsOn(tasks.shadowJar)
+    inputFile.set(tasks.shadowJar.flatMap { it.archiveFile })
 }
