@@ -2,8 +2,11 @@ package com.jelly.farmhelperv2.antistaff.impl;
 
 import com.jelly.farmhelperv2.antistaff.IAntiStaffCheck;
 import net.minecraft.client.Minecraft;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MacroSignatureCheck implements IAntiStaffCheck {
+    private static final Logger LOGGER = LogManager.getLogger("FarmHelper");
     private final Minecraft mc = Minecraft.getInstance();
     private int rightClickCount = 0;
     private int perfectTimingClicks = 0;
@@ -28,20 +31,35 @@ public class MacroSignatureCheck implements IAntiStaffCheck {
 
     @Override
     public void tick() {
-        violating = rightClickCount > 10 && (double) perfectTimingClicks / rightClickCount > 0.75;
-        if (rightClickCount >= 20) {
-            rightClickCount = 0;
-            perfectTimingClicks = 0;
+        try {
+            if (rightClickCount > 10) {
+                violating = (double) perfectTimingClicks / rightClickCount > 0.75;
+            } else {
+                violating = false;
+            }
+            
+            if (rightClickCount >= 20) {
+                rightClickCount = 0;
+                perfectTimingClicks = 0;
+            }
+        } catch (Exception e) {
+            LOGGER.debug("Error in macro signature check tick", e);
         }
     }
 
     public void onRightClick() {
-        long currentTime = System.currentTimeMillis();
-        long timeSinceLastClick = currentTime - lastClickTime;
-        if (lastClickTime > 0 && Math.abs(timeSinceLastClick - 100) < 10) {
-            perfectTimingClicks++;
+        try {
+            long currentTime = System.currentTimeMillis();
+            if (lastClickTime > 0) {
+                long timeSinceLastClick = currentTime - lastClickTime;
+                if (Math.abs(timeSinceLastClick - 100) < 10) {
+                    perfectTimingClicks++;
+                }
+            }
+            rightClickCount++;
+            lastClickTime = currentTime;
+        } catch (Exception e) {
+            LOGGER.debug("Error in right click handler", e);
         }
-        rightClickCount++;
-        lastClickTime = currentTime;
     }
 }

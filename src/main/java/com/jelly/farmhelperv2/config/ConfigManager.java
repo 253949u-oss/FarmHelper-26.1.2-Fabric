@@ -25,7 +25,13 @@ public class ConfigManager {
 
     public static ConfigManager getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new ConfigManager();
+            try {
+                INSTANCE = new ConfigManager();
+            } catch (Exception e) {
+                LOGGER.error("Failed to create ConfigManager instance", e);
+                // Return a fallback instance
+                INSTANCE = new ConfigManager();
+            }
         }
         return INSTANCE;
     }
@@ -35,34 +41,66 @@ public class ConfigManager {
             if (configFile.exists()) {
                 try (FileReader reader = new FileReader(configFile)) {
                     config = GSON.fromJson(reader, FarmHelperConfig.class);
+                    if (config == null) {
+                        LOGGER.warn("Config loaded as null, creating default");
+                        config = new FarmHelperConfig();
+                    }
                     LOGGER.info("Config loaded successfully");
                 }
             } else {
                 config = new FarmHelperConfig();
-                saveConfig();
-                LOGGER.info("Created default config");
+                try {
+                    saveConfig();
+                    LOGGER.info("Created default config");
+                } catch (Exception e) {
+                    LOGGER.error("Failed to save default config", e);
+                }
             }
         } catch (IOException e) {
             LOGGER.error("Failed to load config", e);
+            config = new FarmHelperConfig();
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error loading config", e);
             config = new FarmHelperConfig();
         }
     }
 
     public void saveConfig() {
-        try (FileWriter writer = new FileWriter(configFile)) {
-            GSON.toJson(config, writer);
-            LOGGER.info("Config saved successfully");
+        try {
+            if (config == null) {
+                LOGGER.warn("Cannot save null config, creating default");
+                config = new FarmHelperConfig();
+            }
+            
+            try (FileWriter writer = new FileWriter(configFile)) {
+                GSON.toJson(config, writer);
+                LOGGER.info("Config saved successfully");
+            }
         } catch (IOException e) {
             LOGGER.error("Failed to save config", e);
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error saving config", e);
         }
     }
 
     public FarmHelperConfig getConfig() {
+        if (config == null) {
+            LOGGER.warn("Config is null, returning new default config");
+            config = new FarmHelperConfig();
+        }
         return config;
     }
 
     public void updateConfig(FarmHelperConfig newConfig) {
-        this.config = newConfig;
-        saveConfig();
+        try {
+            if (newConfig == null) {
+                LOGGER.warn("Attempted to update with null config");
+                return;
+            }
+            this.config = newConfig;
+            saveConfig();
+        } catch (Exception e) {
+            LOGGER.error("Error updating config", e);
+        }
     }
 }

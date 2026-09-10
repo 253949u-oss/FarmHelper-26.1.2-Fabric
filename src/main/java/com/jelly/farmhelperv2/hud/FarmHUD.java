@@ -6,66 +6,108 @@ import com.jelly.farmhelperv2.feature.impl.farming.*;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.Minecraft;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class FarmHUD implements HudRenderCallback {
+    private static final Logger LOGGER = LogManager.getLogger("FarmHelper");
     private final Minecraft mc = Minecraft.getInstance();
-    private final FeatureManager featureManager = FarmHelperFabric.getFeatureManager();
     private int displayX = 10;
     private int displayY = 10;
     private boolean enabled = true;
 
     @Override
     public void onHudRender(GuiGraphics guiGraphics, float partialTick) {
-        if (!enabled || mc.player == null) return;
+        try {
+            if (!enabled || mc.player == null) return;
 
-        int y = displayY;
-        int color = 0x00FF00; // Green
+            // Get feature manager safely
+            FeatureManager featureManager = FarmHelperFabric.getFeatureManager();
+            if (featureManager == null) {
+                LOGGER.debug("FeatureManager is null in HUD render");
+                return;
+            }
 
-        // Title
-        guiGraphics.drawString(mc.font, "FarmHelper", displayX, y, 0xFFFFFF);
-        y += 12;
+            int y = displayY;
+            int color = 0x00FF00; // Green
 
-        // Show active macros
-        WheatFarmingMacro wheat = (WheatFarmingMacro) featureManager.getFeature("WheatFarming");
-        if (wheat != null && wheat.isEnabled()) {
-            guiGraphics.drawString(mc.font, "Wheat: " + wheat.getHarvestCount(), displayX, y, color);
-            y += 10;
-        }
+            // Title
+            if (mc.font != null && guiGraphics != null) {
+                guiGraphics.drawString(mc.font, "FarmHelper", displayX, y, 0xFFFFFF);
+                y += 12;
+            }
 
-        CocoaBeanFarmingMacro cocoa = (CocoaBeanFarmingMacro) featureManager.getFeature("CocoaBeanFarming");
-        if (cocoa != null && cocoa.isEnabled()) {
-            guiGraphics.drawString(mc.font, "Cocoa: " + cocoa.getHarvestCount(), displayX, y, color);
-            y += 10;
-        }
+            // Show active macros with null checks
+            try {
+                WheatFarmingMacro wheat = (WheatFarmingMacro) featureManager.getFeature("WheatFarming");
+                if (wheat != null && wheat.isEnabled()) {
+                    guiGraphics.drawString(mc.font, "Wheat: " + wheat.getHarvestCount(), displayX, y, color);
+                    y += 10;
+                }
+            } catch (Exception e) {
+                LOGGER.debug("Error rendering wheat farming HUD", e);
+            }
 
-        MushroomFarmingMacro mushroom = (MushroomFarmingMacro) featureManager.getFeature("MushroomFarming");
-        if (mushroom != null && mushroom.isEnabled()) {
-            guiGraphics.drawString(mc.font, "Mushroom: " + mushroom.getHarvestCount(), displayX, y, color);
-            y += 10;
-        }
+            try {
+                CocoaBeanFarmingMacro cocoa = (CocoaBeanFarmingMacro) featureManager.getFeature("CocoaBeanFarming");
+                if (cocoa != null && cocoa.isEnabled()) {
+                    guiGraphics.drawString(mc.font, "Cocoa: " + cocoa.getHarvestCount(), displayX, y, color);
+                    y += 10;
+                }
+            } catch (Exception e) {
+                LOGGER.debug("Error rendering cocoa bean farming HUD", e);
+            }
 
-        SugarcaneFarmingMacro sugarcane = (SugarcaneFarmingMacro) featureManager.getFeature("SugarcaneFarming");
-        if (sugarcane != null && sugarcane.isEnabled()) {
-            guiGraphics.drawString(mc.font, "Sugarcane: " + sugarcane.getHarvestCount(), displayX, y, color);
-            y += 10;
-        }
+            try {
+                MushroomFarmingMacro mushroom = (MushroomFarmingMacro) featureManager.getFeature("MushroomFarming");
+                if (mushroom != null && mushroom.isEnabled()) {
+                    guiGraphics.drawString(mc.font, "Mushroom: " + mushroom.getHarvestCount(), displayX, y, color);
+                    y += 10;
+                }
+            } catch (Exception e) {
+                LOGGER.debug("Error rendering mushroom farming HUD", e);
+            }
 
-        NetherWartFarmingMacro netherWart = (NetherWartFarmingMacro) featureManager.getFeature("NetherWartFarming");
-        if (netherWart != null && netherWart.isEnabled()) {
-            guiGraphics.drawString(mc.font, "Nether Wart: " + netherWart.getHarvestCount(), displayX, y, color);
-            y += 10;
-        }
+            try {
+                SugarcaneFarmingMacro sugarcane = (SugarcaneFarmingMacro) featureManager.getFeature("SugarcaneFarming");
+                if (sugarcane != null && sugarcane.isEnabled()) {
+                    guiGraphics.drawString(mc.font, "Sugarcane: " + sugarcane.getHarvestCount(), displayX, y, color);
+                    y += 10;
+                }
+            } catch (Exception e) {
+                LOGGER.debug("Error rendering sugarcane farming HUD", e);
+            }
 
-        CarrotPotatoFarmingMacro carrotPotato = (CarrotPotatoFarmingMacro) featureManager.getFeature("CarrotPotatoFarming");
-        if (carrotPotato != null && carrotPotato.isEnabled()) {
-            guiGraphics.drawString(mc.font, "Carrot/Potato: " + carrotPotato.getHarvestCount(), displayX, y, color);
-            y += 10;
-        }
+            try {
+                NetherWartFarmingMacro netherWart = (NetherWartFarmingMacro) featureManager.getFeature("NetherWartFarming");
+                if (netherWart != null && netherWart.isEnabled()) {
+                    guiGraphics.drawString(mc.font, "Nether Wart: " + netherWart.getHarvestCount(), displayX, y, color);
+                    y += 10;
+                }
+            } catch (Exception e) {
+                LOGGER.debug("Error rendering nether wart farming HUD", e);
+            }
 
-        PestFarmingMacro pest = (PestFarmingMacro) featureManager.getFeature("PestFarming");
-        if (pest != null && pest.isEnabled()) {
-            guiGraphics.drawString(mc.font, "Pests Killed: " + pest.getPestKillCount(), displayX, y, 0xFF5500);
-            y += 10;
+            try {
+                CarrotPotatoFarmingMacro carrotPotato = (CarrotPotatoFarmingMacro) featureManager.getFeature("CarrotPotatoFarming");
+                if (carrotPotato != null && carrotPotato.isEnabled()) {
+                    guiGraphics.drawString(mc.font, "Carrot/Potato: " + carrotPotato.getHarvestCount(), displayX, y, color);
+                    y += 10;
+                }
+            } catch (Exception e) {
+                LOGGER.debug("Error rendering carrot/potato farming HUD", e);
+            }
+
+            try {
+                PestFarmingMacro pest = (PestFarmingMacro) featureManager.getFeature("PestFarming");
+                if (pest != null && pest.isEnabled()) {
+                    guiGraphics.drawString(mc.font, "Pest: " + pest.getHarvestCount(), displayX, y, color);
+                }
+            } catch (Exception e) {
+                LOGGER.debug("Error rendering pest farming HUD", e);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error in HUD render", e);
         }
     }
 
